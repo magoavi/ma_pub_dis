@@ -1,4 +1,4 @@
-# What Makes a Bestseller? [![](ma_pub_dis/lbf_cover_updated_v1.jpg)]
+# What Makes a Bestseller? [![Bestseller](https://github.com/magoavi/ma_pub_dis/blob/master/lbf_cover_updated_v1.jpg?raw=true)]
 ### A Case Against Simple Random Walk Model Used in Forecasting Book Sales 
 
 > LBF Presentation on Demand Forecasting Models
