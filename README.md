@@ -1,5 +1,5 @@
-**[Abstract](####Abstract)** |
-**[License](####License)** 
+**[Abstract](#abstract)** |
+**[License](#license)** 
 
 
 # ![alt text](https://github.com/magoavi/ma_pub_dis/blob/master/lbf_cover_updated_v1.jpg?raw=true)
