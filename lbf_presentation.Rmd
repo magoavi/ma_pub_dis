@@ -1,0 +1,439 @@
+---
+output:
+  ioslides_presentation:
+    css: styles.css
+    df_print: kable
+    self_contained: yes
+---
+```{r Loading Libraries, include=FALSE}
+library(png)
+library(grid)
+library(knitr)
+library(kableExtra)
+library(dplyr)
+library(readxl)
+library(ggplot2)
+library(reshape2)
+library(plotly)
+library(parcoords)
+library(leaps)
+library(stargazer)
+```
+
+# Introduction
+
+## About Me
+
+<div class="columns-2">
+```{r echo=FALSE, out.width="70%", out.height="70%"}
+image_path <- "Imperial_1511170271.png"
+knitr::include_graphics(image_path)
+```
+
+- BSc Economics (UCL)
+- MA Publishing (UCL)
+- MSc Business Analytics (Imperial College London)
+
+</div>
+
+
+## Structure
+
+- Context
+- Methodology
+- Results
+- Application
+- Conclusion
+
+# Context
+
+## Context
+
+The current forecast is based on the following criteria:
+
+* Past sales of an author (or comparable authors, for a debut title)
+* Recent performance of a book's genre/category for a publisher
+* Potential for foreign and subsidiary rights sales 
+* Whether the title was auctioned
+
+<footer>[(Friedman, 2015)](https://www.janefriedman.com/book-pl/)</footer>
+
+## Context
+
+```{r echo=FALSE}
+# Creating income Statement
+col_1 <- c("Income", '', '', '', '', "Book Cost", '', '', "Gross Margin", '', "Provisions", '', '', '', '', 
+           'Subrights', '', 'Gross Profit', '', 'Selling Cost', '', '', '', '', '', 'Contribution', '', 'Overheads', '', '')
+col_2 <- c('', "Gross Sales", "Returns","Net Revenue", '', '', "Cost of Sales", "Royalties", '', '', '', 'Advances', 'Stocks',
+           '', '', '', '', '', '', '', 'Marketing & Publicity', 'Customer Support', 'Distribution', 'Comimission',
+           '', '', '', '', '', 'Loss')
+col_3 <- c('', 1204352, -256800, 947552, '', '', -188266, -301809, 457477, '', '', -640416, -21410, -661826, '', 7825, '', -858350, 
+           '', '', -46561, -34137, -56853, -9476, '', -1005377, '', -50000, '', -1055377)
+table <- data.frame(col_1, col_2, col_3)
+colnames(table) <- c('Items_1', 'Items_2', 'GBP')
+
+# Color to specific cells
+table <- table %>%
+         mutate(
+                Items_1 = cell_spec(Items_1, "html"),
+                Items_2 = cell_spec(Items_2, "html"),
+                GBP     = cell_spec(GBP, "html", background = ifelse(GBP == -301809 | GBP == -640416 | GBP == -1055377 , "red", ""), 
+                                    color = ifelse(GBP == -301809| GBP == -640416 | GBP == -1055377 , "white", ""))
+               ) 
+
+colnames(table) <- c('', '', '')
+
+# Printing the income statement
+kable(table, 'html', caption = 'Non-Fiction Miss', escape = F) %>% kable_styling(font_size = 12, "striped")%>%
+  column_spec(1, bold = T , width = "9em") %>%
+  column_spec(2, width = "13em" , bold = T) %>%
+  column_spec(3) %>%
+  add_footnote("Slide Produced by a Top-5 UK Trade Publisher", notation = 'symbol')
+```
+
+## Context
+
+Simple Random Walk Model
+:     A model which presumes that the current value is determined by the past value and a random error term.
+<br>
+<br>
+<br>
+
+More Formally
+:    <div class="centered">$y_{t} = y_{t-1} + e_{t}$</div>
+<br>
+<br>
+<br>
+
+The Main Assumption
+:    e(t) has to be zero on average. 
+
+<br>
+
+No specific reason for this to be true for sales forecast.
+
+## Context | Research Objectives
+
+1) What Are the Factors That Determine the Sales of a Book?
+2) What is the Quantitative Impact of These Factors?
+
+# Methodology
+
+## Methodology | Strategy {.smaller }
+
+ Price and Quantity were analysed separately.
+
+ 1. Price
+     + Primary Research
+          - 500 self administered surveys
+          - Stratified sampling approach
+          - Hypothesis Testing
+ 2. Quantity
+     + Secondary Research
+          - Sample size of 34000 (obtained from Nielsen BookScan)
+          - Regression Analysis
+
+## Methodology | Primary Research - Geographical Scope {.smaller}
+
+```{r echo=FALSE}
+primary_df <- data.frame(
+                        "Retail Outlet" = c("British Library", "Housmans (Indie Bookshop)", "Tesco", "W.H. Smith", "Waterstones"),
+                        "Location" = c("King's Cross", "King's Cross", "King's Cross", "Euston Road", "Bloomsbury"),
+                        "City" = c("London", "London", "London", "London", "London"),
+                        "Lat" = c(51.530437, 51.531259, 51.532168, 51.531982, 51.522728),
+                        "Lon" = c(-0.127655, -0.121149, -0.121167, -0.124478, -0.132235),
+                        "Sample Size" = c(92, 98, 98, 95, 98)
+)
+
+Sys.setenv('MAPBOX_TOKEN' = 'pk.eyJ1IjoiYXZpbWFnbyIsImEiOiJjamFzNDg1cDAxaXh1MndtaXhxd3V6Mzl3In0.ry5GwKDFFBzyI2ph0LOJlw')
+
+primary_df %>%
+              plot_mapbox(lat = ~Lat, lon = ~Lon,
+                          size=5, split = ~Retail.Outlet,
+                          mode = 'scattermapbox', hoverinfo='Sample.Size') %>%
+              layout(
+                    font = list(color='white'),
+                    plot_bgcolor = '#191A1A', paper_bgcolor = '#191A1A',
+                    mapbox = list(style = 'dark', 
+                                  zoom = 13.2,
+                                  center = list(lat = 51.529141,
+                                                lon = -0.125684)),
+                    legend = list(orientation = 'h',
+                                  font = list(size = 8)),
+                    margin = list(l = 25, r = 25,
+                                  b = 25, t = 30,
+                                  pad = 2))
+```
+
+
+## Methodology | Why use Regression Analysis?
+
+Suppose we have sales data of 1000 books and we can separate these books in two groups with the following characteristics:
+
+```{r echo=FALSE}
+att <- c('Sales Quantity of Each Book', 'Metadata', "Author's First Name", 'Colours on Cover Page')
+group_1 <- c(100, 'Complete', "Does not start with an 'A'", 2)
+group_2 <- c(50, 'Incomplete', "Only starts with an 'A'",  'More than 2')
+
+table.2 <- data.frame(att, group_1, group_2)
+colnames(table.2) <- c("Factors", "Group 1", "Group 2")
+
+kable(table.2)
+```
+
+# Results
+
+## Results | Price {.smaller }
+
+Stronger quality signalling factors have a stronger impact on consumer's willingness to pay.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+att.1 <- c('Winning an Award', 'Nomination for an Award', '5 Star Amazon Rating', 'Bestseller Status', "Movie Adaptation","Publisher's Brand")
+results.price <- c(23.5, 17.6, 15.7, 14.9, 12.7, 4.3)
+
+table.3 <- data.frame(att.1, results.price)
+colnames(table.3) <- c('Factors', "Impact on Consumer's Willingness to Pay (%)")
+
+kable(table.3)
+```
+
+## Results | Price {.smaller}
+
+Pricing strategies can be set according to customer responsiveness. Tesco customers are much more responsive to the quality signalling factors in comparison to Waterstones.
+
+```{r echo=FALSE}
+geo.sum <- read.csv("geo_summary.csv")
+colnames(geo.sum) <- c("Location", "Publisher's Brand", "5 Star Amazon Rating", "Bestseller Status", "Award Nomination", "Winning an Award", "Movie Adaptation")
+
+
+geo.location <- geo.sum$Location
+
+geo.sum <- geo.sum[,2:7] * 100
+
+geo.sum$geo_id <- c(1,2,3,4,5)
+
+geo.sum$Location <- geo.location
+
+geo.sum.long <- melt(geo.sum, id.vars = c("Location"))
+
+plot_ly(geo.sum, x = ~Location, y = ~geo.sum$`Publisher's Brand`, type = 'bar', name = "Publisher's Brand", width = 800, height = 300) %>%
+  add_trace(y = ~geo.sum$`5 Star Amazon Rating`, name = '5 Star Amazon Rating') %>%
+  add_trace(y = ~geo.sum$`Bestseller Status`, name = 'Bestseller Status') %>%
+  add_trace(y = ~geo.sum$`Award Nomination`, name = 'Award Nomination') %>%
+  add_trace(y = ~geo.sum$`Winning an Award`, name = 'Winning an Award') %>%
+  add_trace(y = ~geo.sum$`Movie Adaptation`, name = 'Movie Adaptation') %>%
+  layout(yaxis = list(title = "Increase in Willingness to Pay"), barmode = 'group')
+```
+
+## Results | Quantity {.smaller}
+
+```{r message=FALSE, warning=FALSE, include=FALSE, results='asis'}
+quantity <- read_excel("quantity.xlsx")
+quantity <- quantity[c("Volume", "ASP", "Months", "Fiction", "Non-Fiction", "Children", "Unclassified", "Hardback", "Famous Publisher", "No. of Colours on Book Cover", "Volume__1", "Author following on Facebook", "Author following on Twitter", "Native Speaking Author", "Number of books written previously by Author", "Prize", "Movie Adaptation", "Bestseller List")]
+
+quantity$genre <- ifelse(quantity$Fiction==1, 'Fiction', quantity$Fiction)
+quantity$genre <- ifelse(quantity$`Non-Fiction`==1, 'Non-Fiction', quantity$genre)
+quantity$genre <- ifelse(quantity$Children==1, 'Children', quantity$genre)
+quantity$genre <- ifelse(quantity$Unclassified==1, 'Unclassified', quantity$genre)
+quantity$genre <- as.factor(quantity$genre)
+
+
+quantity <- quantity[c("Volume", "ASP", "Months", "genre", "Hardback", "Famous Publisher", "No. of Colours on Book Cover", "Volume__1", "Author following on Facebook", "Author following on Twitter", "Native Speaking Author", "Number of books written previously by Author", "Prize", "Movie Adaptation", "Bestseller List")]
+
+colnames(quantity) <- c("volume", "asp", "months", "genre", "hardback", "famous_pub", "colors", "size", "facebook", "twitter", "native", "book_exp", "award", "movie", "bestseller")
+
+quantity$facebook <- as.numeric(quantity$facebook)
+quantity$facebook <- ifelse(quantity$facebook == 0, 1, quantity$facebook)
+quantity$twitter <- ifelse(quantity$twitter == 0, 1, quantity$twitter)
+
+quantity$hardback <- as.factor(quantity$hardback)
+quantity$famous_pub <- as.factor(quantity$famous_pub)
+quantity$native <- as.factor(quantity$native)
+quantity$award <- as.factor(quantity$award)
+quantity$movie <- as.factor(quantity$movie)
+quantity$bestseller <- as.factor(quantity$bestseller)
+
+quantity$volume <- round(quantity$volume ,2)
+quantity$asp <- round(quantity$asp ,2)
+quantity$months <- round(quantity$months ,2)
+quantity$size <- round(quantity$size ,2)
+quantity$facebook <- round(quantity$facebook ,2)
+quantity$twitter <- round(quantity$twitter ,2)
+quantity$book_exp <- round(quantity$book_exp ,2)
+
+levels(quantity$genre)
+
+quantity <- within(quantity, genre <- relevel(genre, ref = "Unclassified"))
+
+quantity.null <- lm(log(volume) ~ 1, data= quantity)
+quantity.full <- lm(log(volume) ~ I(log(asp)) + months + I(months^2) +
+                        genre + hardback + famous_pub +
+                        colors + I(log(size)) + I(log(facebook)) +
+                        I(log(twitter)) +
+                        native + book_exp + award + movie + bestseller, 
+                        data = quantity)
+
+# Regsubsets
+full <- regsubsets(log(volume) ~ I(log(asp)) + months + I(months^2) +
+                        genre + hardback + famous_pub +
+                        colors + I(log(size)) + I(log(facebook)) +
+                        I(log(twitter)) +
+                        native + book_exp + award + movie + bestseller, 
+                        data = quantity, nbest = 2, nvmax = 14)
+
+plot(full, scale = "adjr2")
+
+Final <- lm(log(volume) ~ I(log(asp)) + months + I(months^2) +
+                        genre + hardback +
+                        I(log(twitter)) +
+                        award + bestseller, 
+                        data = quantity)
+
+# Regsubsets
+Book <- regsubsets(log(volume) ~ I(log(asp)) + months + I(months^2) +
+                        genre + hardback + famous_pub +
+                        colors + I(log(size)), 
+                        data = quantity, nbest = 2, nvmax = 14)
+
+# plot(Book, scale = "adjr2")
+
+Book <- lm(log(volume) ~ I(log(asp)) + months + I(months^2) +
+                        genre + hardback + famous_pub +
+                        colors + I(log(size)), 
+                        data = quantity)
+
+# Regsubsets
+Author <- regsubsets(log(volume) ~ I(log(asp)) +
+                        genre + hardback +
+                        I(log(facebook)) +
+                        I(log(twitter)) +
+                        native + book_exp, 
+                        data = quantity, nbest = 2, nvmax = 14)
+
+# plot(Author, scale = "adjr2")
+
+Author <- lm(log(volume) ~ I(log(asp)) +
+                        genre + hardback +
+                        I(log(facebook)) +
+                        I(log(twitter)) +
+                        native + book_exp, 
+                        data = quantity)
+
+# Regsubsets
+Signalling <- regsubsets(log(volume) ~ I(log(asp)) +
+                        genre + hardback +
+                        award +
+                        movie +
+                        bestseller, 
+                        data = quantity, nbest = 2, nvmax = 14)
+
+# plot(Signalling, scale = "adjr2")
+
+Signalling <- lm(log(volume) ~ I(log(asp)) +
+                        genre + hardback +
+                        award +
+                        movie +
+                        bestseller, 
+                        data = quantity)
+```
+
+```{r echo=FALSE, results='asis'}
+# Result
+stargazer(Book, Author, Signalling, Final, type = 'html', font.size = "footnotesize",
+          omit.stat = c("rsq", "f", "ser", "n"), single.row = TRUE, report = "vc*",
+          object.names = T,
+          align = T,
+          column.labels = c("Pre-Release", "Post-Release", "Full"),
+          column.separate = c(2, 1, 1),
+          column.sep.width = "10pt",
+          no.space = T,
+          model.numbers = F,
+          dep.var.labels   = "Log(Sales Volume)",
+          keep = c("asp", "months", "I(months^2)",
+                   "genre", "hardback", "famous_pub",
+                   "colors", "size", "facebook",
+                   "twitter", "native", "book_exp", 
+                   "award", "movie", "bestseller"),
+          notes        = "[*] p<0.1; [**] p<0.05; [***] p<0.01", 
+          notes.append = F)
+```
+
+## Results | Quantity
+
+ 1. Post-Release Signalling Factors
+     + Bestseller Status has the highest positive impact of 293% on sales, followed by the impact of winning an award (158%).
+ 2. Author Specific Variables
+     + Twitter following has a significant impact on book sales. On the other hand, the impact of Facebook likes was not significant. 
+     + Interestingly, the number of books previously written by an author and the author's ethnicity does not have a statistically significant impact.
+
+# Applications
+
+## Applications | Direct Implications {.smaller}
+
+ **Pricing Strategies**
+ 
+1. Prices can be increased when a book is associated with any of the quality signalling factors* mentioned in this study.
+     + The increase in the price can be proportional to the increase in consumer's willingness to pay.
+2. Discounts given to the retailers can be optimised based on the responsiveness of the customers to various factors like bestseller status, movie adaptation, winning an award, etc. 
+3. The return from quality signalling factors can be aligned with the investment and risk associated with the factor.
+<br>
+<br>
+<br>
+<br>
+
+<div class="new" style=font-size:50%;font-color:grey"> 
+*Quality signalling factors include bestseller status, winning an award, nomination for an award, movie adaptation, Amazon ratings and publisher's brand. </div>
+
+## Applications | Direct Implications {.smaller}
+
+**Demand Forecasting and Efficient Resource Allocation**
+
+1. Regression can help control for various factors and can provide a far accurate prediction compared to just using the past sales. 
+    + Can help avoid giving huge advances which can be difficult to recover.
+    + Increase competitiveness by allowing the publisher to give as high advances as financially feasible.
+2. Useful for analysing the most effective marketing channels
+    + Can be used for allocating budget between various marketing channels based on their relative effectiveness.
+    + For instance, if online media appears to be more effective than offline media and if Twitter has the highest impact on book sales, then marketing campaigns can be focused towards Twitter.
+3. Can help identify the importance of various awards and their impact on sales
+
+
+## Applications | Possibilities {.smaller}
+
+1. Analysing manuscripts
+    + There are machine learning algorithms which can easily help to identify topics, complexity and many other features.
+2. Building Classifiers
+    + This information along with the metadata information can be used to create an algorithm which can help the publishers in their decision of publishing a book.
+3. Analysing Macro-Level Sentiments
+    + By using tweets it is possible to understand if there is a positive or negative sentiment about a particular topic.
+    + This information can be used to find opportunities and gaps in the market.
+         
+
+# Conclusion
+
+## Conclusion
+
+It is time for the publishing industry to make use of the available data to make smart business decisions and move beyond the gut-based decision-making process.
+
+**In God we Trust, all others bring data** - _W.Edwards Deming_
+
+# Thank You
+
+## Contact Information
+
+<div class="columns-2">
+```{r echo=FALSE, out.width="70%", out.height="70%"}
+image_path <- "Imperial_1511170271.png"
+knitr::include_graphics(image_path)
+```
+
+Linkedin
+: [www.linkedin.com/in/avimago](https://www.linkedin.com/in/avimago)
+ 
+<br>
+
+Email
+: avimago@gmail.com
+
+</div>
+
+         
