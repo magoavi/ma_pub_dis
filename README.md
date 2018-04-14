@@ -7,7 +7,7 @@
 
 
 [![Packagist](https://img.shields.io/packagist/l/doctrine/orm.svg)](#license)
-![Packagist](https://img.shields.io/badge/author-avimago-green.svg)
+[![Packagist](https://img.shields.io/badge/author-avimago-green.svg)](https://github.com/magoavi)
 
 # ![alt text](https://github.com/magoavi/ma_pub_dis/blob/master/lbf_cover_updated_v1.jpg?raw=true)
 
