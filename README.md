@@ -31,7 +31,7 @@ The study finds that `book awards` and `nominations` significantly impact the Co
 
 MIT License
 
-Copyright (c) 2017 ICDSS
+Copyright (c) 2018 Avi Mago
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
