@@ -7,7 +7,6 @@
 
 
 ![Packagist](https://img.shields.io/packagist/l/doctrine/orm.svg)
-![GitHub issue author](https://img.shields.io/github/issues/detail/u/badges/shields/979.svg)
 
 # ![alt text](https://github.com/magoavi/ma_pub_dis/blob/master/lbf_cover_updated_v1.jpg?raw=true)
 
