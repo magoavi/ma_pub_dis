@@ -1,5 +1,15 @@
-# What Makes a Bestseller?
-### A Case Against Simple Random Walk Model Used in Forecasting Book Sales 
+<center>
+
+**[Abstract](#abstract)** |
+**[License](#license)** 
+
+</center>
+
+
+[![Packagist](https://img.shields.io/packagist/l/doctrine/orm.svg)](#license)
+[![Packagist](https://img.shields.io/badge/author-avimago-green.svg)](https://github.com/magoavi)
+[![Packagist](https://img.shields.io/badge/event-lbf-red.svg)](https://www.londonbookfair.co.uk/en/Sessions/60841/Deserving-Dissertations-and-Prize-worthy-Projects-a-Publishing-Education-Showcase-University-Publishing-Courses-Emerging-Talent-Share-their-Research-and-Major-Projects)
+# ![alt text](https://github.com/magoavi/ma_pub_dis/blob/master/lbf_cover_updated_v1.jpg?raw=true)
 
 > LBF Presentation on Demand Forecasting Models
 
@@ -9,11 +19,11 @@ The publishing industry uses Profit & Loss accounts to establish the financial f
 
 Scientific research on variables possibly impacting book sales indicates substantial variations in sales because of changes observed in these variables. The New York Times bestseller list, particularly, has boosted book sales. Statistical evidence indicates Book Awards help increase revenues for not only the winning book but also the others nominated books. There is sufficient evidence on how Amazon ratings and online reviews impact book sales in the e-retail market. Despite the evidence, publishers are not using this data to forecast book sales revenue for a forthcoming title. 
 
-This presentation reviews eight variables that significantly impact book sales revenue, and which inform this study’s methodology. Besides statistically proving these variables can impact book sales revenue, it proposes several demand forecasting models the publishing industry can use to calculate forecasted book sales volume and revenue more accurately. The impact is quantified separately for quantity and price using regression analysis and semi-structured questionnaires, respectively. 
+This presentation reviews `eight` variables that significantly impact book sales revenue, and which inform this study’s methodology. Besides statistically proving these variables can impact book sales revenue, it proposes several demand forecasting models the publishing industry can use to calculate forecasted book sales volume and revenue more accurately. The impact is quantified separately for quantity and price using regression analysis and semi-structured questionnaires, respectively. 
 
 ---
 
-The study finds that book awards and nominations significantly impact the Consumer’s Willingness to Pay whereas Bestseller Status increases a book’s demand. By quantifying the impacts of several variables, this study rejects the random walk model of demand forecasting and suggests the publishing industry adopts a more sophisticated demand forecasting model.
+The study finds that `book awards` and `nominations` significantly impact the Consumer’s Willingness to Pay whereas `Bestseller Status` increases a book’s demand. By quantifying the impacts of several variables, this study rejects the random walk model of demand forecasting and suggests the publishing industry adopts a more sophisticated demand forecasting model.
 
 ---
 
