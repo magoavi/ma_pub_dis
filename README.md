@@ -1,9 +1,9 @@
 # What Makes a Bestseller?
-## A Case Against Simple Random Walk Model Used in Forecasting Book Sales 
+### A Case Against Simple Random Walk Model Used in Forecasting Book Sales 
 
 > LBF Presentation on Demand Forecasting Models
 
-### Abstract
+#### Abstract
 
 The publishing industry uses Profit & Loss accounts to establish the financial feasibility of a potential title. To calculate forecasted sales revenue, publishers use past sales records of similar titles. Without any evidence of its efficiency, this method is still used to calculate author advances.
 
@@ -17,7 +17,7 @@ The study finds that book awards and nominations significantly impact the Consum
 
 ---
 
-### License
+#### License
 
 MIT License
 
