@@ -5,6 +5,10 @@
 
 </center>
 
+
+![Packagist](https://img.shields.io/packagist/l/doctrine/orm.svg)
+
+
 # ![alt text](https://github.com/magoavi/ma_pub_dis/blob/master/lbf_cover_updated_v1.jpg?raw=true)
 
 > LBF Presentation on Demand Forecasting Models
