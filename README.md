@@ -23,7 +23,7 @@ This presentation reviews `eight` variables that significantly impact book sales
 
 ---
 
-The study finds that `book awards` and `nominations` significantly impact the Consumer’s Willingness to Pay whereas `Bestseller Status` increases a book’s demand. By quantifying the impacts of several variables, this study rejects the random walk model of demand forecasting and suggests the publishing industry adopts a more sophisticated demand forecasting model.
+>_The study finds that `book awards` and `nominations` significantly impact the Consumer’s Willingness to Pay whereas `Bestseller Status` increases a book’s demand. By quantifying the impacts of several variables, this study rejects the random walk model of demand forecasting and suggests the publishing industry adopts a more sophisticated demand forecasting model.
 
 ---
 
