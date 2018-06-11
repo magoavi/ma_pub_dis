@@ -9,7 +9,7 @@
 [![Packagist](https://img.shields.io/packagist/l/doctrine/orm.svg)](#license)
 [![Packagist](https://img.shields.io/badge/author-avimago-green.svg)](https://github.com/magoavi)
 [![Packagist](https://img.shields.io/badge/event-lbf-red.svg)](https://www.londonbookfair.co.uk/en/Sessions/60841/Deserving-Dissertations-and-Prize-worthy-Projects-a-Publishing-Education-Showcase-University-Publishing-Courses-Emerging-Talent-Share-their-Research-and-Major-Projects)
-# ![alt text](https://github.com/magoavi/ma_pub_dis/blob/master/lbf_cover_updated_v1.jpg?raw=true)
+# ![alt text](https://raw.githubusercontent.com/magoavi/ma_pub_dis/master/lbf_cover_updated_v1.jpg)
 
 > LBF Presentation on Demand Forecasting Models
 
